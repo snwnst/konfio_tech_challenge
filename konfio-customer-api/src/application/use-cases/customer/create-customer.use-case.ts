@@ -27,24 +27,14 @@ export class CreateCustomerUseCase {
         createCustomerDto as Customer,
       );
 
-      // Invalidate cache for this customer
+      console.log('customer', customer);
+
       const cacheKey = `customer:${customer.id}`;
       await this.cachePort.del(cacheKey);
 
-      // Publish event
-      await this.kafkaEventPort.publish('customer.created', {
-        id: customer.id,
-        taxId: customer.taxId,
-        type: customer.type,
-        name: customer.name,
-        createdAt: customer.createdAt,
-      });
+      await this.kafkaEventPort.publish('customer.created', customer);
 
-      this.logger.info('Customer created successfully', {
-        customerId: customer.id,
-        taxId: customer.taxId,
-        type: customer.type,
-      });
+      this.logger.info('Customer created successfully', customer);
 
       return customer;
     } catch (error) {
