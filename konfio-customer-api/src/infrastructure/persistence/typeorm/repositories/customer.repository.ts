@@ -17,18 +17,11 @@ export class CustomerRepository implements CustomerRepositoryPort {
     if (!customerEntity) {
       throw new Error('Customer not found');
     }
-    return new Customer(
-      customerEntity.id,
-      customerEntity.name,
-      customerEntity.email,
-    );
+    return customerEntity.toDomain();
   }
 
   async save(customer: Customer): Promise<void> {
-    const customerEntity = new CustomerEntity();
-    customerEntity.id = customer.id;
-    customerEntity.name = customer.name;
-    customerEntity.email = customer.email;
+    const customerEntity = CustomerEntity.fromDomain(customer);
     await this.repository.save(customerEntity);
   }
 }

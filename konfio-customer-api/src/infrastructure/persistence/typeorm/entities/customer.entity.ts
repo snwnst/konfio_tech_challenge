@@ -11,4 +11,16 @@ export class CustomerEntity implements Customer {
 
   @Column()
   email: string;
+
+  toDomain(): Customer {
+    return new Customer(this.id, this.name, this.email);
+  }
+
+  static fromDomain(customer: Customer): CustomerEntity {
+    const entity = new CustomerEntity();
+    entity.id = customer.id;
+    entity.name = customer.name;
+    entity.email = customer.email;
+    return entity;
+  }
 }
