@@ -9,9 +9,12 @@ import { UpdateCustomerUseCase } from 'src/application/use-cases/customer/update
 import { DeleteCustomerUseCase } from 'src/application/use-cases/customer/delete-customer.use-case';
 import { ManagePartiesUseCase } from 'src/application/use-cases/customer/manage-parties.use-case';
 import { GetPartyCustomersUseCase } from 'src/application/use-cases/party/get-party-customers.use-case';
+import { CreatePartyUseCase } from 'src/application/use-cases/party/create-party.use-case';
+import { UpdatePartyUseCase } from 'src/application/use-cases/party/update-party.use-case';
 import { LoggerModule } from 'src/infrastructure/logger/logger.module';
 import { EventsModule } from 'src/infrastructure/events/events.module';
 import { CacheModule } from 'src/infrastructure/cache/cache.module';
+import { DeletePartyUseCase } from 'src/application/use-cases/party/delete-party.use-case';
 
 @Module({
   imports: [PersistenceModule, LoggerModule, EventsModule, CacheModule],
@@ -24,6 +27,9 @@ import { CacheModule } from 'src/infrastructure/cache/cache.module';
     DeleteCustomerUseCase,
     ManagePartiesUseCase,
     GetPartyCustomersUseCase,
+    CreatePartyUseCase,
+    DeletePartyUseCase,
+    UpdatePartyUseCase,
   ],
 })
 export class RestModule {}

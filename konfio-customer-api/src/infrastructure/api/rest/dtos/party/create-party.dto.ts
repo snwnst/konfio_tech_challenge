@@ -1,33 +1,38 @@
-import { IsString, IsEnum, IsOptional } from 'class-validator';
+import { IsString, IsEnum, IsEmail, IsNotEmpty } from 'class-validator';
 import { PartyRole } from 'src/domain/model/party-role.model';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UpdatePartyDto {
+export class CreatePartyDto {
   @ApiProperty({
     description: 'Name of the party',
     example: 'John Doe',
-    required: false,
   })
   @IsString()
-  @IsOptional()
-  name?: string;
+  @IsNotEmpty()
+  name: string;
 
   @ApiProperty({
     description: 'Email address of the party',
     example: 'john.doe@example.com',
-    required: false,
   })
-  @IsString()
-  @IsOptional()
-  email?: string;
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
   @ApiProperty({
     description: 'Role of the party',
     enum: PartyRole,
     example: PartyRole.ADMIN,
-    required: false,
   })
   @IsEnum(PartyRole)
-  @IsOptional()
-  role?: PartyRole;
+  @IsNotEmpty()
+  role: PartyRole;
+
+  @ApiProperty({
+    description: 'ID of the customer this party belongs to',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @IsString()
+  @IsNotEmpty()
+  customerId: string;
 }

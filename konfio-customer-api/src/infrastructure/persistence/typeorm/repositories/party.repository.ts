@@ -20,6 +20,7 @@ export class PartyRepository implements PartyRepositoryPort {
 
   async create(party: Party): Promise<Party> {
     const entity = PartyMapper.toEntity(party);
+    console.log('🚨 Creating party:', entity);
     const savedEntity = await this.repository.save(entity);
     return PartyMapper.toDomain(savedEntity);
   }
@@ -53,5 +54,9 @@ export class PartyRepository implements PartyRepositoryPort {
   async findByEmail(email: string): Promise<Party | null> {
     const entity = await this.repository.findOne({ where: { email } });
     return entity ? PartyMapper.toDomain(entity) : null;
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
   }
 }
