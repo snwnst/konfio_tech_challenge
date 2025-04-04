@@ -7,7 +7,7 @@ import {
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
 import { PartyRepositoryPort } from '../../../domain/ports/party.repository.port';
 import { PartyRole } from '../../../domain/model/party-role.model';
-import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { LoggerPort } from '../../../application/ports/logger.port';
 import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
 import { CachePort } from '../../../domain/ports/cache.port';
 
@@ -24,8 +24,8 @@ export class ManagePartiesUseCase {
     private readonly customerRepository: CustomerRepositoryPort,
     @Inject('PartyRepositoryPort')
     private readonly partyRepository: PartyRepositoryPort,
-    @Inject('Logger')
-    private readonly logger: Logger,
+    @Inject('LoggerPort')
+    private readonly logger: LoggerPort,
     @Inject('KafkaEventPort')
     private readonly kafkaEventPort: KafkaEventPort,
     @Inject('CachePort')

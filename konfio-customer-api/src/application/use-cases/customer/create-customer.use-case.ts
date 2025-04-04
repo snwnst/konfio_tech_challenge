@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
 import { Customer } from '../../../domain/model/customer.model';
-import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { LoggerPort } from '../../../application/ports/logger.port';
 import { CreateCustomerDto } from '../../../infrastructure/api/rest/dtos/customer/create-customer.dto';
 import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
 import { CachePort } from '../../../domain/ports/cache.port';
@@ -11,8 +11,8 @@ export class CreateCustomerUseCase {
   constructor(
     @Inject('CustomerRepositoryPort')
     private readonly customerRepository: CustomerRepositoryPort,
-    @Inject('Logger')
-    private readonly logger: Logger,
+    @Inject('LoggerPort')
+    private readonly logger: LoggerPort,
     @Inject('KafkaEventPort')
     private readonly kafkaEventPort: KafkaEventPort,
     @Inject('CachePort')

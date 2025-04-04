@@ -28,8 +28,8 @@ import { DeletePartyUseCase } from 'src/application/use-cases/party/delete-party
     ManagePartiesUseCase,
     GetPartyCustomersUseCase,
     CreatePartyUseCase,
-    DeletePartyUseCase,
     UpdatePartyUseCase,
+    DeletePartyUseCase,
   ],
 })
 export class RestModule {}

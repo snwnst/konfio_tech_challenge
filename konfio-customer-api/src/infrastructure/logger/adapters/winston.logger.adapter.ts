@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { createLogger, format, transports } from 'winston';
-import { Logger } from './logger.interface';
+import { LoggerPort } from '../../../application/ports/logger.port';
 
 @Injectable()
-export class WinstonLogger implements Logger {
+export class WinstonLoggerAdapter implements LoggerPort {
   private logger;
 
   constructor() {

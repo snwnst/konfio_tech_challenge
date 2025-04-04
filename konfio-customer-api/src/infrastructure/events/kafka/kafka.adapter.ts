@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Kafka, Producer, Consumer } from 'kafkajs';
 import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
-import { Logger } from '../../logger/logger.interface';
+import { LoggerPort } from '../../../application/ports/logger.port';
 
 @Injectable()
 export class KafkaAdapter
@@ -18,8 +18,8 @@ export class KafkaAdapter
   private subscriptions: Map<string, (message: any) => Promise<void>>;
 
   constructor(
-    @Inject('Logger')
-    private readonly logger: Logger,
+    @Inject('LoggerPort')
+    private readonly logger: LoggerPort,
   ) {
     this.kafka = new Kafka({
       clientId: process.env.KAFKA_CLIENT_ID || 'konfio-customer-api',

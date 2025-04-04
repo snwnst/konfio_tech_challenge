@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
 import { Customer } from '../../../domain/model/customer.model';
-import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { LoggerPort } from '../../../application/ports/logger.port';
 import { CachePort } from '../../../domain/ports/cache.port';
 
 @Injectable()
@@ -9,8 +9,8 @@ export class GetCustomerUseCase {
   constructor(
     @Inject('CustomerRepositoryPort')
     private readonly customerRepository: CustomerRepositoryPort,
-    @Inject('Logger')
-    private readonly logger: Logger,
+    @Inject('LoggerPort')
+    private readonly logger: LoggerPort,
     @Inject('CachePort')
     private readonly cachePort: CachePort,
   ) {}

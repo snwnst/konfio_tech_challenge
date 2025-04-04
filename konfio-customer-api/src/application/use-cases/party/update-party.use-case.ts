@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { PartyRepositoryPort } from '../../../domain/ports/party.repository.port';
 import { Party } from '../../../domain/model/party.model';
-import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { LoggerPort } from '../../../application/ports/logger.port';
 import { UpdatePartyDto } from '../../../infrastructure/api/rest/dtos/party/update-party.dto';
 
 @Injectable()
@@ -9,8 +9,8 @@ export class UpdatePartyUseCase {
   constructor(
     @Inject('PartyRepositoryPort')
     private readonly partyRepository: PartyRepositoryPort,
-    @Inject('Logger')
-    private readonly logger: Logger,
+    @Inject('LoggerPort')
+    private readonly logger: LoggerPort,
   ) {}
 
   async execute(

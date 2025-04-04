@@ -1,14 +1,14 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { PartyRepositoryPort } from '../../../domain/ports/party.repository.port';
-import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { LoggerPort } from '../../../application/ports/logger.port';
 
 @Injectable()
 export class GetPartyCustomersUseCase {
   constructor(
     @Inject('PartyRepositoryPort')
     private readonly partyRepository: PartyRepositoryPort,
-    @Inject('Logger')
-    private readonly logger: Logger,
+    @Inject('LoggerPort')
+    private readonly logger: LoggerPort,
   ) {}
 
   async execute(partyId: string): Promise<string[]> {

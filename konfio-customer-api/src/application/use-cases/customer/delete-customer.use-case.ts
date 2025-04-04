@@ -1,6 +1,6 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
-import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { LoggerPort } from '../../../application/ports/logger.port';
 import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
 import { CachePort } from '../../../domain/ports/cache.port';
 
@@ -9,8 +9,8 @@ export class DeleteCustomerUseCase {
   constructor(
     @Inject('CustomerRepositoryPort')
     private readonly customerRepository: CustomerRepositoryPort,
-    @Inject('Logger')
-    private readonly logger: Logger,
+    @Inject('LoggerPort')
+    private readonly logger: LoggerPort,
     @Inject('KafkaEventPort')
     private readonly kafkaEventPort: KafkaEventPort,
     @Inject('CachePort')
