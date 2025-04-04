@@ -1,6 +1,7 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
 import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
 
 @Injectable()
 export class DeleteCustomerUseCase {
@@ -9,6 +10,8 @@ export class DeleteCustomerUseCase {
     private readonly customerRepository: CustomerRepositoryPort,
     @Inject('Logger')
     private readonly logger: Logger,
+    @Inject('KafkaEventPort')
+    private readonly kafkaEventPort: KafkaEventPort,
   ) {}
 
   async execute(id: string): Promise<void> {
@@ -28,14 +31,20 @@ export class DeleteCustomerUseCase {
         taxId: existingCustomer.taxId,
         type: existingCustomer.type,
       });
+
+      // Publish customer deleted event
+      await this.kafkaEventPort.publish('customer.deleted', {
+        id: existingCustomer.id,
+        taxId: existingCustomer.taxId,
+        name: existingCustomer.name,
+        type: existingCustomer.type,
+        deletedAt: new Date().toISOString(),
+      });
     } catch (error) {
-      this.logger.error(
-        error instanceof Error ? error.message : String(error),
-        {
-          error: error instanceof Error ? error.message : String(error),
-          customerId: id,
-        },
-      );
+      this.logger.error('Error deleting customer', {
+        error: error instanceof Error ? error.message : String(error),
+        customerId: id,
+      });
       throw error;
     }
   }

@@ -8,6 +8,7 @@ import { CustomerRepositoryPort } from '../../../domain/ports/customer.repositor
 import { Customer } from '../../../domain/model/customer.model';
 import { CustomerType } from '../../../domain/model/customer-type.model';
 import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
 
 @Injectable()
 export class UpdateCustomerUseCase {
@@ -16,6 +17,8 @@ export class UpdateCustomerUseCase {
     private readonly customerRepository: CustomerRepositoryPort,
     @Inject('Logger')
     private readonly logger: Logger,
+    @Inject('KafkaEventPort')
+    private readonly kafkaEventPort: KafkaEventPort,
   ) {}
 
   async execute(
@@ -69,6 +72,16 @@ export class UpdateCustomerUseCase {
         customerId: updatedCustomer.id,
         taxId: updatedCustomer.taxId,
         type: updatedCustomer.type,
+      });
+
+      // Publish customer updated event
+      await this.kafkaEventPort.publish('customer.updated', {
+        id: updatedCustomer.id,
+        taxId: updatedCustomer.taxId,
+        name: updatedCustomer.name,
+        type: updatedCustomer.type,
+        updatedAt: new Date().toISOString(),
+        changes: customerData,
       });
 
       return updatedCustomer;

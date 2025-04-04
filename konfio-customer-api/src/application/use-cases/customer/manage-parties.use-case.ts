@@ -8,6 +8,7 @@ import { CustomerRepositoryPort } from '../../../domain/ports/customer.repositor
 import { PartyRepositoryPort } from '../../../domain/ports/party.repository.port';
 import { PartyRole } from '../../../domain/model/party-role.model';
 import { Logger } from '../../../infrastructure/logger/logger.interface';
+import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
 
 interface PartyUpdateData {
   name?: string;
@@ -24,6 +25,8 @@ export class ManagePartiesUseCase {
     private readonly partyRepository: PartyRepositoryPort,
     @Inject('Logger')
     private readonly logger: Logger,
+    @Inject('KafkaEventPort')
+    private readonly kafkaEventPort: KafkaEventPort,
   ) {}
 
   async addParty(customerId: string, partyId: string): Promise<void> {
@@ -59,6 +62,16 @@ export class ManagePartiesUseCase {
       this.logger.info('Party added to customer successfully', {
         customerId,
         partyId,
+      });
+
+      // Publish party added event
+      await this.kafkaEventPort.publish('customer.party.added', {
+        customerId,
+        partyId,
+        partyName: party.name,
+        partyEmail: party.email,
+        partyRole: party.role,
+        addedAt: new Date().toISOString(),
       });
     } catch (error) {
       this.logger.error('Error adding party to customer', {
@@ -118,6 +131,17 @@ export class ManagePartiesUseCase {
         customerId,
         partyId,
         data,
+      });
+
+      // Publish party updated event
+      await this.kafkaEventPort.publish('customer.party.updated', {
+        customerId,
+        partyId,
+        partyName: party.name,
+        partyEmail: party.email,
+        partyRole: party.role,
+        changes: data,
+        updatedAt: new Date().toISOString(),
       });
     } catch (error) {
       this.logger.error('Error updating party', {

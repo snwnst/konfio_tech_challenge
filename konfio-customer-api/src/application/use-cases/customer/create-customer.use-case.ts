@@ -4,6 +4,7 @@ import { Customer } from '../../../domain/model/customer.model';
 import { CustomerType } from '../../../domain/model/customer-type.model';
 import { Logger } from '../../../infrastructure/logger/logger.interface';
 import { CreateCustomerDto } from '../../../infrastructure/api/rest/dtos/customer/create-customer.dto';
+import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
 
 @Injectable()
 export class CreateCustomerUseCase {
@@ -12,6 +13,8 @@ export class CreateCustomerUseCase {
     private readonly customerRepository: CustomerRepositoryPort,
     @Inject('Logger')
     private readonly logger: Logger,
+    @Inject('KafkaEventPort')
+    private readonly kafkaEventPort: KafkaEventPort,
   ) {}
 
   async execute(createCustomerDto: CreateCustomerDto): Promise<Customer> {
@@ -51,6 +54,15 @@ export class CreateCustomerUseCase {
         customerId: customer.id,
         taxId: customer.taxId,
         type: customer.type,
+      });
+
+      // Publish customer created event
+      await this.kafkaEventPort.publish('customer.created', {
+        id: customer.id,
+        taxId: customer.taxId,
+        name: customer.name,
+        type: customer.type,
+        createdAt: new Date().toISOString(),
       });
 
       return customer;
