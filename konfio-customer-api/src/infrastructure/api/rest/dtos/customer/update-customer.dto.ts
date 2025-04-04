@@ -8,7 +8,9 @@ export class UpdateCustomerDto {
     example: 'Juan Pérez',
     required: false,
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsString()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsOptional()
   name?: string;
 
@@ -17,7 +19,9 @@ export class UpdateCustomerDto {
     example: 'XAXX010101000',
     required: false,
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsString()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsOptional()
   taxId?: string;
 
@@ -27,7 +31,9 @@ export class UpdateCustomerDto {
     example: CustomerType.INDIVIDUAL,
     required: false,
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsEnum(CustomerType)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsOptional()
   type?: CustomerType;
 }

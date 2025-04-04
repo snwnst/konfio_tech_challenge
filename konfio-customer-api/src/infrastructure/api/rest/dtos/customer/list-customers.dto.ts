@@ -9,7 +9,9 @@ export class ListCustomersDto {
     example: CustomerType.INDIVIDUAL,
     required: false,
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsEnum(CustomerType)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsOptional()
   enterpriseType?: CustomerType;
 
@@ -19,8 +21,11 @@ export class ListCustomersDto {
     required: false,
     minimum: 1,
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsInt()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @Min(1)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsOptional()
   page?: number;
 
@@ -30,8 +35,11 @@ export class ListCustomersDto {
     required: false,
     minimum: 1,
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsInt()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @Min(1)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsOptional()
   limit?: number;
 }

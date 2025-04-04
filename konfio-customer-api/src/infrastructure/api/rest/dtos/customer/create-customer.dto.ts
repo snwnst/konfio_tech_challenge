@@ -7,7 +7,9 @@ export class CreateCustomerDto {
     description: 'Nombre del cliente',
     example: 'Juan Pérez',
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsString()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsNotEmpty()
   name: string;
 
@@ -15,7 +17,9 @@ export class CreateCustomerDto {
     description: 'RFC del cliente',
     example: 'XAXX010101000',
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsString()
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsNotEmpty()
   taxId: string;
 
@@ -24,7 +28,9 @@ export class CreateCustomerDto {
     enum: CustomerType,
     example: CustomerType.INDIVIDUAL,
   })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsEnum(CustomerType)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   @IsNotEmpty()
   type: CustomerType;
 }
