@@ -409,6 +409,102 @@ The infrastructure is defined using Terraform and includes:
 - **Health Checks**: Basic health check endpoint
 - **Logging**: Structured logging with correlation IDs
 
+## 🗄️ Database and Migrations
+
+### ORM Implementation
+
+This project uses TypeORM as the Object-Relational Mapping (ORM) framework. TypeORM provides:
+
+- **Entity Mapping**: Automatic mapping between TypeScript classes and database tables
+- **Repository Pattern**: Abstraction layer for database operations
+- **Query Builder**: Type-safe query construction
+- **Relationships**: Support for one-to-one, one-to-many, and many-to-many relationships
+
+Example entity definition:
+
+```typescript
+@Entity('customers')
+export class Customer {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column()
+  name: string;
+
+  @Column({ unique: true })
+  taxId: string;
+
+  @Column({
+    type: 'enum',
+    enum: CustomerType,
+    default: CustomerType.INDIVIDUAL
+  })
+  type: CustomerType;
+
+  @OneToOne(() => ContactInfo, { cascade: true })
+  @JoinColumn()
+  contactInfo: ContactInfo;
+
+  @OneToMany(() => Party, party => party.customer)
+  parties: Party[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+}
+```
+
+### Migrations
+
+Database migrations are managed using TypeORM's migration system. Migrations are stored in the `migrations` directory and are automatically executed when the application starts if the `DB_MIGRATE` environment variable is set to `true`.
+
+Key features of our migration implementation:
+
+1. **Version Control**: Each migration is versioned and tracked in the database
+2. **Up/Down Methods**: Migrations include both `up` and `down` methods for applying and reverting changes
+3. **Automatic Execution**: Migrations run automatically on application startup
+4. **Transaction Support**: Migrations run within transactions for data consistency
+
+Example migration:
+
+```typescript
+import { MigrationInterface, QueryRunner } from 'typeorm';
+
+export class CreateCustomerTable1234567890123 implements MigrationInterface {
+  name = 'CreateCustomerTable1234567890123';
+
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      CREATE TABLE "customers" (
+        "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
+        "name" character varying NOT NULL,
+        "taxId" character varying NOT NULL,
+        "type" "public"."customers_type_enum" NOT NULL DEFAULT 'INDIVIDUAL',
+        "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
+        CONSTRAINT "UQ_customers_taxId" UNIQUE ("taxId"),
+        CONSTRAINT "PK_customers" PRIMARY KEY ("id")
+      )
+    `);
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE "customers"`);
+  }
+}
+```
+
+To run migrations manually:
+
+```bash
+# Generate a new migration
+npm run migration:generate
+
+# Run migrations
+npm run migration:run
+
+# Revert the last migration
+npm run migration:revert
+```
+
 ## 🧩 Project Structure
 
 ```
