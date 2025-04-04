@@ -33,7 +33,7 @@ export class DatabaseConfigAdapter implements DatabaseConfigPort {
   }
 
   shouldSynchronize(): boolean {
-    return process.env.DB_MIGRATE === 'false';
+    return process.env.DB_MIGRATE === 'true';
   }
 
   shouldLog(): boolean {
