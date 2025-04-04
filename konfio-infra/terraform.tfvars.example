@@ -1,0 +1,11 @@
+aws_region         = "us-east-1"
+environment        = "dev"
+project_name       = "konfio"
+vpc_cidr          = "10.0.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
+cluster_name      = "konfio-eks"
+cluster_version   = "1.27"
+db_name           = "konfio_customer"
+db_username       = "admin"
+db_password       = "your-secure-password-here"  # Change this in production!
+db_instance_class = "db.t3.micro" 
