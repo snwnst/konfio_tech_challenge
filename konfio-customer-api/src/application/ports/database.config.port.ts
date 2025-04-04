@@ -4,8 +4,7 @@ export interface DatabaseConfigPort {
   getUsername(): string;
   getPassword(): string;
   getDatabase(): string;
-  getEntities(): any[];
-  getMigrations(): string[];
+  getMigrations(path: string): string[];
   getMigrationsTableName(): string;
   shouldSynchronize(): boolean;
   shouldLog(): boolean;

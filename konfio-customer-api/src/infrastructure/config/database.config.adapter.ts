@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseConfigPort } from '../../application/ports/database.config.port';
-import { CustomerEntity } from '../persistence/typeorm/entities/customer.entity';
 
 @Injectable()
 export class DatabaseConfigAdapter implements DatabaseConfigPort {
@@ -24,16 +23,12 @@ export class DatabaseConfigAdapter implements DatabaseConfigPort {
     return process.env.DB_DATABASE || 'konfio_customer';
   }
 
-  getEntities(): any[] {
-    return [CustomerEntity];
-  }
-
   getMigrationsTableName(): string {
-    return process.env.DB_MIGRATIONS_TABLE_NAME || 'migrations';
+    return process.env.DB_MIGRATIONS_TABLE_NAME || 'db_migrations';
   }
 
-  getMigrations(): string[] {
-    return process.env.DB_MIGRATIONS?.split(',') || ['migrations/*.ts'];
+  getMigrations(path: string): string[] {
+    return process.env.DB_MIGRATIONS?.split(',') || [`migrations/${path}/*.ts`];
   }
 
   shouldSynchronize(): boolean {

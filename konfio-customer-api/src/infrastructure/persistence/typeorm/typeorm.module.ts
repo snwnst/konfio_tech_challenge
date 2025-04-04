@@ -14,7 +14,7 @@ const configAdapter = new DatabaseConfigAdapter();
       username: configAdapter.getUsername(),
       password: configAdapter.getPassword(),
       database: configAdapter.getDatabase(),
-      migrations: configAdapter.getMigrations(),
+      migrations: configAdapter.getMigrations('typeOrm'),
       synchronize: configAdapter.shouldSynchronize(),
       logging: configAdapter.shouldLog(),
       entities: [CustomerEntity],
