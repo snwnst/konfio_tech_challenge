@@ -1,7 +1,7 @@
 import { PartyRole } from './party-role.model';
 
 export class Party {
-  readonly id: string;
+  id: string;
   name: string;
   email: string;
   role: PartyRole;

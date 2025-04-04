@@ -28,7 +28,10 @@ export class CustomerRepository implements CustomerRepositoryPort {
     page?: number;
     limit?: number;
   }): Promise<{ customers: Customer[]; total: number }> {
-    const query = this.repository.createQueryBuilder('customer');
+    const query = this.repository
+      .createQueryBuilder('customer')
+      .leftJoinAndSelect('customer.contactInfo', 'contactInfo')
+      .leftJoinAndSelect('customer.parties', 'parties');
 
     if (filters.enterpriseType) {
       query.andWhere('customer.type = :enterpriseType', {
@@ -52,7 +55,10 @@ export class CustomerRepository implements CustomerRepositoryPort {
   }
 
   async findById(id: string): Promise<Customer | null> {
-    const entity = await this.repository.findOne({ where: { id } });
+    const entity = await this.repository.findOne({
+      where: { id },
+      relations: ['contactInfo', 'parties'],
+    });
     return entity ? CustomerMapper.toDomain(entity) : null;
   }
 
@@ -64,8 +70,12 @@ export class CustomerRepository implements CustomerRepositoryPort {
 
   async update(id: string, customer: Partial<Customer>): Promise<Customer> {
     const entity = CustomerMapper.toEntity(customer as Customer);
-    await this.repository.update(id, entity);
-    const updatedEntity = await this.repository.findOne({ where: { id } });
+    entity.id = id;
+    await this.repository.save(entity);
+    const updatedEntity = await this.repository.findOne({
+      where: { id },
+      relations: ['contactInfo', 'parties'],
+    });
     if (!updatedEntity) {
       throw new Error(`Customer with ID ${id} not found`);
     }
@@ -73,7 +83,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
   }
 
   async delete(id: string): Promise<void> {
-    await this.repository.update(id, { isDeleted: true });
+    await this.repository.delete(id);
   }
 
   async addParty(customerId: string, partyId: string): Promise<void> {

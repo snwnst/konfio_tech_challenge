@@ -1,12 +1,6 @@
-import {
-  Injectable,
-  Inject,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
 import { Customer } from '../../../domain/model/customer.model';
-import { CustomerType } from '../../../domain/model/customer-type.model';
 import { Logger } from '../../../infrastructure/logger/logger.interface';
 import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
 import { CachePort } from '../../../domain/ports/cache.port';
@@ -42,32 +36,6 @@ export class UpdateCustomerUseCase {
         throw new NotFoundException(`Customer with ID ${id} not found`);
       }
 
-      if (updateCustomerDto.type) {
-        if (!Object.values(CustomerType).includes(updateCustomerDto.type)) {
-          this.logger.warn('Invalid enterprise type provided', {
-            customerId: id,
-            type: updateCustomerDto.type,
-          });
-          throw new BadRequestException(
-            `Enterprise type must be either ${CustomerType.ENTERPRISE} or ${CustomerType.INDIVIDUAL}`,
-          );
-        }
-
-        if (
-          updateCustomerDto.type === CustomerType.ENTERPRISE &&
-          updateCustomerDto.taxId &&
-          updateCustomerDto.taxId.length < 10
-        ) {
-          this.logger.warn('Invalid company tax ID length', {
-            customerId: id,
-            taxId: updateCustomerDto.taxId,
-          });
-          throw new BadRequestException(
-            'Company tax ID must be at least 10 characters long',
-          );
-        }
-      }
-
       const updatedCustomer = await this.customerRepository.update(id, {
         ...existingCustomer,
         ...updateCustomerDto,
@@ -78,19 +46,9 @@ export class UpdateCustomerUseCase {
       await this.cachePort.del(cacheKey);
 
       // Publish event
-      await this.kafkaEventPort.publish('customer.updated', {
-        id: updatedCustomer.id,
-        taxId: updatedCustomer.taxId,
-        type: updatedCustomer.type,
-        name: updatedCustomer.name,
-        updatedAt: new Date().toISOString(),
-      });
+      await this.kafkaEventPort.publish('customer.updated', updatedCustomer);
 
-      this.logger.info('Customer updated successfully', {
-        customerId: updatedCustomer.id,
-        taxId: updatedCustomer.taxId,
-        type: updatedCustomer.type,
-      });
+      this.logger.info('Customer updated successfully', updatedCustomer);
 
       return updatedCustomer;
     } catch (error) {

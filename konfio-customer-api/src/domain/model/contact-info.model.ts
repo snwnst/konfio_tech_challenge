@@ -1,5 +1,5 @@
 export class ContactInfo {
-  readonly id: string;
+  id: string;
   email: string;
   phone?: string;
   address?: string;

@@ -3,7 +3,7 @@ import { CustomerType } from './customer-type.model';
 import { Party } from './party.model';
 
 export class Customer {
-  readonly id: string;
+  id: string;
   name: string;
   taxId: string;
   type: CustomerType;

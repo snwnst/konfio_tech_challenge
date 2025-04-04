@@ -32,12 +32,6 @@ export class CustomerMapper {
       ? ContactInfoMapper.toEntity(domain.contactInfo)
       : new ContactInfoEntity();
 
-    if (domain.parties) {
-      entity.parties = domain.parties.map((party) =>
-        PartyMapper.toEntity(party),
-      );
-    }
-
     return entity;
   }
 }
