@@ -10,9 +10,10 @@ import { DeleteCustomerUseCase } from 'src/application/use-cases/customer/delete
 import { ManagePartiesUseCase } from 'src/application/use-cases/customer/manage-parties.use-case';
 import { GetPartyCustomersUseCase } from 'src/application/use-cases/party/get-party-customers.use-case';
 import { LoggerModule } from 'src/infrastructure/logger/logger.module';
+import { EventsModule } from 'src/infrastructure/events/events.module';
 
 @Module({
-  imports: [PersistenceModule, LoggerModule],
+  imports: [PersistenceModule, LoggerModule, EventsModule],
   controllers: [CustomerController, PartyController],
   providers: [
     ListCustomersUseCase,

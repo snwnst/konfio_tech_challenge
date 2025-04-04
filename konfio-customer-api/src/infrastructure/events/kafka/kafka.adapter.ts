@@ -22,11 +22,13 @@ export class KafkaAdapter
     private readonly logger: Logger,
   ) {
     this.kafka = new Kafka({
-      clientId: 'konfio-customer-api',
+      clientId: process.env.KAFKA_CLIENT_ID || 'konfio-customer-api',
       brokers: (process.env.KAFKA_BROKERS || 'localhost:9092').split(','),
     });
     this.producer = this.kafka.producer();
-    this.consumer = this.kafka.consumer({ groupId: 'konfio-customer-group' });
+    this.consumer = this.kafka.consumer({
+      groupId: process.env.KAFKA_GROUP_ID || 'konfio-customer-group',
+    });
     this.subscriptions = new Map();
   }
 
