@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { PartyEntity } from './party.entity';
+import { ContactInfoEntity } from './contact-info.entity';
+import { CustomerType } from 'src/domain/model/customer-type.model';
 
 @Entity('customers')
 export class CustomerEntity {
@@ -10,4 +19,20 @@ export class CustomerEntity {
 
   @Column()
   email: string;
+
+  @Column()
+  taxId: string;
+
+  @Column({
+    type: 'enum',
+    enum: CustomerType,
+    default: CustomerType.INDIVIDUAL,
+  })
+  type: CustomerType;
+
+  @OneToMany(() => PartyEntity, (party) => party.customer)
+  parties: PartyEntity[];
+
+  @OneToOne(() => ContactInfoEntity, (contactInfo) => contactInfo.customer)
+  contactInfo: ContactInfoEntity;
 }

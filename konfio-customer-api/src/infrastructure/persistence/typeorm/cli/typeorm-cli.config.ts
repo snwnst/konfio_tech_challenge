@@ -1,17 +1,18 @@
 import { DataSource } from 'typeorm';
 import { CustomerEntity } from '../entities/customer.entity';
-import { DatabaseConfigAdapter } from '../../../config/database.config.adapter';
+import { ContactInfoEntity } from '../entities/contact-info.entity';
+import { PartyEntity } from '../entities/party.entity';
 
-const configAdapter = new DatabaseConfigAdapter();
-
-export const dataSourceConfig = new DataSource({
+const dataSource = new DataSource({
   type: 'mysql',
-  host: configAdapter.getHost(),
-  port: configAdapter.getPort(),
-  username: configAdapter.getUsername(),
-  password: configAdapter.getPassword(),
-  database: configAdapter.getDatabase(),
-  entities: [CustomerEntity],
-  migrations: configAdapter.getMigrations('typeOrm'),
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '3306'),
+  username: process.env.DB_USERNAME || 'root',
+  password: process.env.DB_PASSWORD || '123456',
+  database: process.env.DB_DATABASE || 'konfio_customer',
+  entities: [CustomerEntity, ContactInfoEntity, PartyEntity],
+  migrations: ['migrations/*.ts'],
   synchronize: false,
 });
+
+export default dataSource;
