@@ -1,5 +1,5 @@
 import { IsString, IsEnum, IsOptional } from 'class-validator';
-import { PartyRole } from '../../../../domain/model/party-role.model';
+import { PartyRole } from 'src/domain/model/party-role.model';
 
 export class UpdatePartyDto {
   @IsString()

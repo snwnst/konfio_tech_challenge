@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { GetPartyCustomersUseCase } from '../../../application/use-cases/party/get-party-customers.use-case';
+import { GetPartyCustomersUseCase } from 'src/application/use-cases/party/get-party-customers.use-case';
 
 @Controller('parties')
 export class PartyController {

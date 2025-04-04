@@ -10,16 +10,16 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ListCustomersUseCase } from '../../../application/use-cases/customer/list-customers.use-case';
-import { GetCustomerUseCase } from '../../../application/use-cases/customer/get-customer.use-case';
-import { CreateCustomerUseCase } from '../../../application/use-cases/customer/create-customer.use-case';
-import { UpdateCustomerUseCase } from '../../../application/use-cases/customer/update-customer.use-case';
-import { DeleteCustomerUseCase } from '../../../application/use-cases/customer/delete-customer.use-case';
-import { ManagePartiesUseCase } from '../../../application/use-cases/customer/manage-parties.use-case';
-import { CreateCustomerDto } from '../dtos/customer/create-customer.dto';
+import { DeleteCustomerUseCase } from 'src/application/use-cases/customer/delete-customer.use-case';
 import { UpdateCustomerDto } from '../dtos/customer/update-customer.dto';
 import { ListCustomersDto } from '../dtos/customer/list-customers.dto';
 import { UpdatePartyDto } from '../dtos/party/update-party.dto';
+import { ListCustomersUseCase } from 'src/application/use-cases/customer/list-customers.use-case';
+import { GetCustomerUseCase } from 'src/application/use-cases/customer/get-customer.use-case';
+import { CreateCustomerUseCase } from 'src/application/use-cases/customer/create-customer.use-case';
+import { ManagePartiesUseCase } from 'src/application/use-cases/customer/manage-parties.use-case';
+import { UpdateCustomerUseCase } from 'src/application/use-cases/customer/update-customer.use-case';
+import { CreateCustomerDto } from '../dtos/customer/create-customer.dto';
 
 @Controller('customers')
 export class CustomerController {

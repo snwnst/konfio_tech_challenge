@@ -1,5 +1,5 @@
 import { IsString, IsEnum, IsOptional } from 'class-validator';
-import { CustomerType } from '../../../../domain/model/customer-type.model';
+import { CustomerType } from 'src/domain/model/customer-type.model';
 
 export class UpdateCustomerDto {
   @IsString()

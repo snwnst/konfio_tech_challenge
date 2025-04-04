@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsInt, Min } from 'class-validator';
-import { CustomerType } from '../../../../domain/model/customer-type.model';
+import { CustomerType } from 'src/domain/model/customer-type.model';
 
 export class ListCustomersDto {
   @IsEnum(CustomerType)
