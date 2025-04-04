@@ -9,6 +9,7 @@ import { PartyRepositoryPort } from '../../../domain/ports/party.repository.port
 import { PartyRole } from '../../../domain/model/party-role.model';
 import { Logger } from '../../../infrastructure/logger/logger.interface';
 import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
+import { CachePort } from '../../../domain/ports/cache.port';
 
 interface PartyUpdateData {
   name?: string;
@@ -27,6 +28,8 @@ export class ManagePartiesUseCase {
     private readonly logger: Logger,
     @Inject('KafkaEventPort')
     private readonly kafkaEventPort: KafkaEventPort,
+    @Inject('CachePort')
+    private readonly cachePort: CachePort,
   ) {}
 
   async addParty(customerId: string, partyId: string): Promise<void> {
@@ -58,6 +61,10 @@ export class ManagePartiesUseCase {
       }
 
       await this.customerRepository.addParty(customerId, partyId);
+
+      // Invalidate cache for this customer
+      const cacheKey = `customer:${customerId}`;
+      await this.cachePort.del(cacheKey);
 
       this.logger.info('Party added to customer successfully', {
         customerId,
@@ -126,6 +133,10 @@ export class ManagePartiesUseCase {
       }
 
       await this.customerRepository.updateParty(customerId, partyId, data);
+
+      // Invalidate cache for this customer
+      const cacheKey = `customer:${customerId}`;
+      await this.cachePort.del(cacheKey);
 
       this.logger.info('Party updated successfully', {
         customerId,

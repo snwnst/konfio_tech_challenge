@@ -5,6 +5,7 @@ import { CustomerType } from '../../../domain/model/customer-type.model';
 import { Logger } from '../../../infrastructure/logger/logger.interface';
 import { CreateCustomerDto } from '../../../infrastructure/api/rest/dtos/customer/create-customer.dto';
 import { KafkaEventPort } from '../../../domain/ports/kafka-event.port';
+import { CachePort } from '../../../domain/ports/cache.port';
 
 @Injectable()
 export class CreateCustomerUseCase {
@@ -15,6 +16,8 @@ export class CreateCustomerUseCase {
     private readonly logger: Logger,
     @Inject('KafkaEventPort')
     private readonly kafkaEventPort: KafkaEventPort,
+    @Inject('CachePort')
+    private readonly cachePort: CachePort,
   ) {}
 
   async execute(createCustomerDto: CreateCustomerDto): Promise<Customer> {
@@ -50,23 +53,27 @@ export class CreateCustomerUseCase {
         createCustomerDto as Customer,
       );
 
+      // Invalidate cache for this customer
+      const cacheKey = `customer:${customer.id}`;
+      await this.cachePort.del(cacheKey);
+
+      // Publish event
+      await this.kafkaEventPort.publish('customer.created', {
+        id: customer.id,
+        taxId: customer.taxId,
+        type: customer.type,
+        name: customer.name,
+        createdAt: customer.createdAt,
+      });
+
       this.logger.info('Customer created successfully', {
         customerId: customer.id,
         taxId: customer.taxId,
         type: customer.type,
       });
 
-      // Publish customer created event
-      await this.kafkaEventPort.publish('customer.created', {
-        id: customer.id,
-        taxId: customer.taxId,
-        name: customer.name,
-        type: customer.type,
-        createdAt: new Date().toISOString(),
-      });
-
       return customer;
-    } catch (error: unknown) {
+    } catch (error) {
       this.logger.error('Error creating customer', {
         error: error instanceof Error ? error.message : String(error),
         data: createCustomerDto,

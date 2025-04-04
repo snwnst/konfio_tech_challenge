@@ -9,6 +9,7 @@ export class Customer {
   type: CustomerType;
   contactInfo: ContactInfo;
   parties: Party[] = [];
+  createdAt: Date;
 
   constructor(
     id: string,
@@ -17,6 +18,7 @@ export class Customer {
     type: CustomerType,
     contactInfo: ContactInfo,
     parties: Party[],
+    createdAt: Date,
   ) {
     this.id = id;
     this.name = name;
@@ -24,6 +26,7 @@ export class Customer {
     this.type = type;
     this.contactInfo = contactInfo;
     this.parties = parties;
+    this.createdAt = createdAt;
   }
 
   addParty(party: Party) {

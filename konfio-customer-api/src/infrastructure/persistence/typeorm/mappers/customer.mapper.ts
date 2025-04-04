@@ -16,6 +16,7 @@ export class CustomerMapper {
       entity.type,
       contactInfo,
       parties,
+      entity.createdAt,
     );
   }
 

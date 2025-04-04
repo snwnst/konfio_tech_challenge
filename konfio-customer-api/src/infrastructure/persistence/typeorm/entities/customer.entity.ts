@@ -38,4 +38,7 @@ export class CustomerEntity {
 
   @ManyToOne(() => ContactInfoEntity, (contactInfo) => contactInfo.customers)
   contactInfo: ContactInfoEntity;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
 }

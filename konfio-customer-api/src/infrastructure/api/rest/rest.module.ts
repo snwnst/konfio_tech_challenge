@@ -11,9 +11,10 @@ import { ManagePartiesUseCase } from 'src/application/use-cases/customer/manage-
 import { GetPartyCustomersUseCase } from 'src/application/use-cases/party/get-party-customers.use-case';
 import { LoggerModule } from 'src/infrastructure/logger/logger.module';
 import { EventsModule } from 'src/infrastructure/events/events.module';
+import { CacheModule } from 'src/infrastructure/cache/cache.module';
 
 @Module({
-  imports: [PersistenceModule, LoggerModule, EventsModule],
+  imports: [PersistenceModule, LoggerModule, EventsModule, CacheModule],
   controllers: [CustomerController, PartyController],
   providers: [
     ListCustomersUseCase,
