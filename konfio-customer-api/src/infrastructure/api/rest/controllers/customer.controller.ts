@@ -9,6 +9,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UsePipes,
 } from '@nestjs/common';
 import { DeleteCustomerUseCase } from 'src/application/use-cases/customer/delete-customer.use-case';
 import { UpdateCustomerDto } from '../dtos/customer/update-customer.dto';
@@ -27,9 +28,13 @@ import {
   ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
+import { JoiValidationPipe } from '../pipes/joi-validation.pipe';
+import { createCustomerSchema } from '../schemas/create-customer.schema';
+import { updateCustomerSchema } from '../schemas/update-customer.schema';
+import { listCustomersSchema } from '../schemas/list-customers.schema';
 
-@ApiTags('customers')
-@Controller('customers')
+@ApiTags('enterprises')
+@Controller('enterprises')
 export class CustomerController {
   constructor(
     private readonly listCustomersUseCase: ListCustomersUseCase,
@@ -41,14 +46,15 @@ export class CustomerController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Listar clientes' })
+  @ApiOperation({ summary: 'List customers' })
   @ApiQuery({ name: 'enterpriseType', required: false })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
   @ApiResponse({
     status: 200,
-    description: 'Lista de clientes obtenida exitosamente',
+    description: 'Customers list retrieved successfully',
   })
+  @UsePipes(new JoiValidationPipe(listCustomersSchema))
   async listCustomers(@Query() query: ListCustomersDto) {
     return this.listCustomersUseCase.execute({
       enterpriseType: query.enterpriseType,
@@ -58,28 +64,30 @@ export class CustomerController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Obtener un cliente por ID' })
-  @ApiParam({ name: 'id', description: 'ID del cliente' })
-  @ApiResponse({ status: 200, description: 'Cliente encontrado' })
-  @ApiResponse({ status: 404, description: 'Cliente no encontrado' })
+  @ApiOperation({ summary: 'Get a customer by ID' })
+  @ApiParam({ name: 'id', description: 'Customer ID' })
+  @ApiResponse({ status: 200, description: 'Customer found' })
+  @ApiResponse({ status: 404, description: 'Customer not found' })
   async getCustomer(@Param('id') id: string) {
     return this.getCustomerUseCase.execute(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Crear un nuevo cliente' })
-  @ApiResponse({ status: 201, description: 'Cliente creado exitosamente' })
-  @ApiResponse({ status: 400, description: 'Datos inválidos' })
+  @ApiOperation({ summary: 'Create a new customer' })
+  @ApiResponse({ status: 201, description: 'Customer created successfully' })
+  @ApiResponse({ status: 400, description: 'Invalid data' })
+  @UsePipes(new JoiValidationPipe(createCustomerSchema))
   async createCustomer(@Body() createCustomerDto: CreateCustomerDto) {
     return this.createCustomerUseCase.execute(createCustomerDto);
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Actualizar un cliente' })
-  @ApiParam({ name: 'id', description: 'ID del cliente' })
-  @ApiResponse({ status: 200, description: 'Cliente actualizado exitosamente' })
-  @ApiResponse({ status: 404, description: 'Cliente no encontrado' })
+  @ApiOperation({ summary: 'Update a customer' })
+  @ApiParam({ name: 'id', description: 'Customer ID' })
+  @ApiResponse({ status: 200, description: 'Customer updated successfully' })
+  @ApiResponse({ status: 404, description: 'Customer not found' })
+  @UsePipes(new JoiValidationPipe(updateCustomerSchema))
   async updateCustomer(
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
@@ -89,21 +97,21 @@ export class CustomerController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Eliminar un cliente' })
-  @ApiParam({ name: 'id', description: 'ID del cliente' })
-  @ApiResponse({ status: 204, description: 'Cliente eliminado exitosamente' })
-  @ApiResponse({ status: 404, description: 'Cliente no encontrado' })
+  @ApiOperation({ summary: 'Delete a customer' })
+  @ApiParam({ name: 'id', description: 'Customer ID' })
+  @ApiResponse({ status: 204, description: 'Customer deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Customer not found' })
   async deleteCustomer(@Param('id') id: string) {
     await this.deleteCustomerUseCase.execute(id);
   }
 
   @Post(':id/parties/:partyId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Agregar una parte a un cliente' })
-  @ApiParam({ name: 'id', description: 'ID del cliente' })
-  @ApiParam({ name: 'partyId', description: 'ID de la parte' })
-  @ApiResponse({ status: 204, description: 'Parte agregada exitosamente' })
-  @ApiResponse({ status: 404, description: 'Cliente o parte no encontrado' })
+  @ApiOperation({ summary: 'Add a party to a customer' })
+  @ApiParam({ name: 'id', description: 'Customer ID' })
+  @ApiParam({ name: 'partyId', description: 'Party ID' })
+  @ApiResponse({ status: 204, description: 'Party added successfully' })
+  @ApiResponse({ status: 404, description: 'Customer or party not found' })
   async addParty(
     @Param('id') customerId: string,
     @Param('partyId') partyId: string,
@@ -113,11 +121,11 @@ export class CustomerController {
 
   @Put(':id/parties/:partyId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Actualizar una parte de un cliente' })
-  @ApiParam({ name: 'id', description: 'ID del cliente' })
-  @ApiParam({ name: 'partyId', description: 'ID de la parte' })
-  @ApiResponse({ status: 204, description: 'Parte actualizada exitosamente' })
-  @ApiResponse({ status: 404, description: 'Cliente o parte no encontrado' })
+  @ApiOperation({ summary: 'Update a party of a customer' })
+  @ApiParam({ name: 'id', description: 'Customer ID' })
+  @ApiParam({ name: 'partyId', description: 'Party ID' })
+  @ApiResponse({ status: 204, description: 'Party updated successfully' })
+  @ApiResponse({ status: 404, description: 'Customer or party not found' })
   async updateParty(
     @Param('id') customerId: string,
     @Param('partyId') partyId: string,
@@ -131,10 +139,10 @@ export class CustomerController {
   }
 
   @Get(':id/parties')
-  @ApiOperation({ summary: 'Obtener las partes de un cliente' })
-  @ApiParam({ name: 'id', description: 'ID del cliente' })
-  @ApiResponse({ status: 200, description: 'Partes obtenidas exitosamente' })
-  @ApiResponse({ status: 404, description: 'Cliente no encontrado' })
+  @ApiOperation({ summary: 'Get customer parties' })
+  @ApiParam({ name: 'id', description: 'Customer ID' })
+  @ApiResponse({ status: 200, description: 'Parties retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'Customer not found' })
   async getParties(@Param('id') customerId: string) {
     return this.managePartiesUseCase.getParties(customerId);
   }

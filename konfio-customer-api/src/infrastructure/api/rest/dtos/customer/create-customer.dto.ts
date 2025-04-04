@@ -1,36 +1,23 @@
-import { IsString, IsEnum, IsNotEmpty } from 'class-validator';
-import { CustomerType } from 'src/domain/model/customer-type.model';
 import { ApiProperty } from '@nestjs/swagger';
+import { CustomerType } from 'src/domain/model/customer-type.model';
 
 export class CreateCustomerDto {
   @ApiProperty({
-    description: 'Nombre del cliente',
-    example: 'Juan Pérez',
+    description: 'Customer name',
+    example: 'John Doe',
   })
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  @IsString()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  @IsNotEmpty()
   name: string;
 
   @ApiProperty({
-    description: 'RFC del cliente',
+    description: 'Customer tax ID',
     example: 'XAXX010101000',
   })
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  @IsString()
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  @IsNotEmpty()
   taxId: string;
 
   @ApiProperty({
-    description: 'Tipo de cliente',
+    description: 'Customer type',
     enum: CustomerType,
     example: CustomerType.INDIVIDUAL,
   })
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  @IsEnum(CustomerType)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  @IsNotEmpty()
   type: CustomerType;
 }

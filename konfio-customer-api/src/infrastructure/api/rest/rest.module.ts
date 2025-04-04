@@ -9,11 +9,10 @@ import { UpdateCustomerUseCase } from 'src/application/use-cases/customer/update
 import { DeleteCustomerUseCase } from 'src/application/use-cases/customer/delete-customer.use-case';
 import { ManagePartiesUseCase } from 'src/application/use-cases/customer/manage-parties.use-case';
 import { GetPartyCustomersUseCase } from 'src/application/use-cases/party/get-party-customers.use-case';
-import { HealthController } from './health.controller';
 
 @Module({
   imports: [PersistenceModule],
-  controllers: [CustomerController, PartyController, HealthController],
+  controllers: [CustomerController, PartyController],
   providers: [
     ListCustomersUseCase,
     GetCustomerUseCase,
