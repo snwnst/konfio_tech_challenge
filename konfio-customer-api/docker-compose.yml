@@ -1,83 +1,4 @@
-networks:
-  resource_network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.1.0/24
-          gateway: 192.168.1.1
-  konfio_network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.2.0/24
-          gateway: 192.168.2.1
-
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    restart: always
-    ports:
-      - '3306:3306'
-    volumes:
-      - mysql_init:/docker-entrypoint-initdb.d
-      - mysql_data:/var/lib/mysql
-    command: --default-authentication-plugin=mysql_native_password --sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
-    environment:
-      MYSQL_ROOT_PASSWORD: '123456'
-      MYSQL_DATABASE: 'mysql'
-    networks:
-      - resource_network
-      - konfio_network
-
-  redis:
-    image: redis:latest
-    container_name: redis
-    restart: always
-    ports:
-      - '6379:6379'
-    volumes:
-      - redis_data:/data
-    networks:
-      - resource_network
-      - konfio_network
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    container_name: zookeeper
-    restart: always
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-    ports:
-      - '2181:2181'
-    volumes:
-      - zookeeper_data:/var/lib/zookeeper
-    networks:
-      - resource_network
-      - konfio_network
-
-  kafka:
-    image: confluentinc/cp-kafka:latest
-    container_name: kafka
-    restart: always
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-    ports:
-      - '9092:9092'
-    volumes:
-      - kafka_data:/var/lib/kafka
-    networks:
-      - resource_network
-      - konfio_network
-
   app:
     build:
       context: .
@@ -108,19 +29,6 @@ services:
     networks:
       - konfio_network
 
-volumes:
-  mysql_init:
-    name: mysql_init
-    driver: local
-  mysql_data:
-    name: mysql_data
-    driver: local
-  redis_data:
-    name: redis_data
-    driver: local
-  kafka_data:
-    name: kafka_data
-    driver: local
-  zookeeper_data:
-    name: zookeeper_data
-    driver: local
+networks:
+  konfio_network:
+    external: true
