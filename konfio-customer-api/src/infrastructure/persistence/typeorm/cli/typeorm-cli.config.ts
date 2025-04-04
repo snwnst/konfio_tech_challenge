@@ -10,6 +10,7 @@ const dataSource = new DataSource({
   username: process.env.DB_USERNAME || 'root',
   password: process.env.DB_PASSWORD || '123456',
   database: process.env.DB_DATABASE || 'konfio_customer',
+  migrationsTableName: process.env.DB_MIGRATIONS_TABLE_NAME || 'migrations',
   entities: [CustomerEntity, ContactInfoEntity, PartyEntity],
   migrations: ['migrations/typeOrm/*.ts'],
   synchronize: false,

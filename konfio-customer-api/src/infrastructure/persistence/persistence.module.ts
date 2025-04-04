@@ -1,16 +1,11 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ContactInfoEntity } from './typeorm/entities/contact-info.entity';
-import { CustomerEntity } from './typeorm/entities/customer.entity';
-import { PartyEntity } from './typeorm/entities/party.entity';
 import { ContactInfoRepository } from './typeorm/repositories/contact-info.repository';
 import { CustomerRepository } from './typeorm/repositories/customer.repository';
 import { PartyRepository } from './typeorm/repositories/party.repository';
+import { TypeOrmPersistenceModule } from './typeorm/typeorm.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([CustomerEntity, ContactInfoEntity, PartyEntity]),
-  ],
+  imports: [TypeOrmPersistenceModule],
   providers: [
     {
       provide: 'CustomerRepositoryPort',

@@ -19,6 +19,7 @@ const configAdapter = new DatabaseConfigAdapter();
       migrations: configAdapter.getMigrations('typeOrm'),
       synchronize: configAdapter.shouldSynchronize(),
       logging: configAdapter.shouldLog(),
+      migrationsTableName: configAdapter.getMigrationsTableName(),
       entities: [CustomerEntity, ContactInfoEntity, PartyEntity],
     }),
     TypeOrmModule.forFeature([CustomerEntity, ContactInfoEntity, PartyEntity]),

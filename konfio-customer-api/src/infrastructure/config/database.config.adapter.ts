@@ -24,7 +24,7 @@ export class DatabaseConfigAdapter implements DatabaseConfigPort {
   }
 
   getMigrationsTableName(): string {
-    return process.env.DB_MIGRATIONS_TABLE_NAME || 'db_migrations';
+    return process.env.DB_MIGRATIONS_TABLE_NAME || 'migrations';
   }
 
   getMigrations(path: string): string[] {
