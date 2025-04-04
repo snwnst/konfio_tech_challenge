@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { CustomerEntity } from '../entities/customer.entity';
-import { ContactInfoEntity } from '../entities/contact-info.entity';
 import { PartyEntity } from '../entities/party.entity';
+import { ContactInfoEntity } from '../entities/contact-info.entity';
 
 const dataSource = new DataSource({
   type: 'mysql',
@@ -11,7 +11,7 @@ const dataSource = new DataSource({
   password: process.env.DB_PASSWORD || '123456',
   database: process.env.DB_DATABASE || 'konfio_customer',
   entities: [CustomerEntity, ContactInfoEntity, PartyEntity],
-  migrations: ['migrations/*.ts'],
+  migrations: ['migrations/typeOrm/*.ts'],
   synchronize: false,
 });
 

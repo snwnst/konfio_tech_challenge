@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerEntity } from './entities/customer.entity';
 import { DatabaseConfigAdapter } from '../../config/database.config.adapter';
+import { PartyEntity } from './entities/party.entity';
+import { ContactInfoEntity } from './entities/contact-info.entity';
 
 const configAdapter = new DatabaseConfigAdapter();
 
@@ -17,9 +19,9 @@ const configAdapter = new DatabaseConfigAdapter();
       migrations: configAdapter.getMigrations('typeOrm'),
       synchronize: configAdapter.shouldSynchronize(),
       logging: configAdapter.shouldLog(),
-      entities: [CustomerEntity],
+      entities: [CustomerEntity, ContactInfoEntity, PartyEntity],
     }),
-    TypeOrmModule.forFeature([CustomerEntity]),
+    TypeOrmModule.forFeature([CustomerEntity, ContactInfoEntity, PartyEntity]),
   ],
   exports: [TypeOrmModule],
 })

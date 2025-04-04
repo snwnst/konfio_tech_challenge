@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CustomerEntity } from './customer.entity';
 
 @Entity('contact_info')
@@ -15,6 +15,6 @@ export class ContactInfoEntity {
   @Column({ nullable: true })
   address?: string;
 
-  @OneToOne(() => CustomerEntity, (customer) => customer.contactInfo)
-  customer: CustomerEntity;
+  @OneToMany(() => CustomerEntity, (customer) => customer.contactInfo)
+  customers: CustomerEntity[];
 }

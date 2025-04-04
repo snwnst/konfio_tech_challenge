@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CustomerRepositoryPort } from '../../../../application/ports/customer.repository.port';
 import { Customer } from '../../../../domain/model/customer.model';
 import { CustomerMapper } from '../mappers/customer.mapper';
+import { CustomerEntity } from '../entities/customer.entity';
 
 @Injectable()
 export class CustomerRepository implements CustomerRepositoryPort {

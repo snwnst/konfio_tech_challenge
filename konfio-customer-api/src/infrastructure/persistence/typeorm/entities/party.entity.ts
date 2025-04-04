@@ -1,4 +1,4 @@
-import { PartyRole } from 'src/domain/model/party-role.model';
+import { PartyRole } from '../../../../domain/model/party-role.model';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { CustomerEntity } from './customer.entity';
 

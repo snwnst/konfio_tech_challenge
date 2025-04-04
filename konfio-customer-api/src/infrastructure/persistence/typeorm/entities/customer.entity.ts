@@ -1,13 +1,13 @@
 import {
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { PartyEntity } from './party.entity';
 import { ContactInfoEntity } from './contact-info.entity';
-import { CustomerType } from 'src/domain/model/customer-type.model';
+import { CustomerType } from '../../../../domain/model/customer-type.model';
 
 @Entity('customers')
 export class CustomerEntity {
@@ -33,6 +33,6 @@ export class CustomerEntity {
   @OneToMany(() => PartyEntity, (party) => party.customer)
   parties: PartyEntity[];
 
-  @OneToOne(() => ContactInfoEntity, (contactInfo) => contactInfo.customer)
+  @ManyToOne(() => ContactInfoEntity, (contactInfo) => contactInfo.customers)
   contactInfo: ContactInfoEntity;
 }
