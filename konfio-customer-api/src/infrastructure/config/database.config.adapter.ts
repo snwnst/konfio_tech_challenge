@@ -28,6 +28,10 @@ export class DatabaseConfigAdapter implements DatabaseConfigPort {
     return [CustomerEntity];
   }
 
+  getMigrationsTableName(): string {
+    return process.env.DB_MIGRATIONS_TABLE_NAME || 'migrations';
+  }
+
   getMigrations(): string[] {
     return process.env.DB_MIGRATIONS?.split(',') || ['migrations/*.ts'];
   }

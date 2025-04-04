@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CustomerEntity } from '../entities/customer.entity';
-import { Customer } from '../../../../domain/model/customer.model';
 import { CustomerRepositoryPort } from '../../../../application/ports/customer.repository.port';
+import { Customer } from '../../../../domain/model/customer.model';
+import { CustomerEntity } from '../entities/customer.entity';
+import { CustomerMapper } from '../mappers/customer.mapper';
 
 @Injectable()
 export class CustomerRepository implements CustomerRepositoryPort {
@@ -12,16 +13,19 @@ export class CustomerRepository implements CustomerRepositoryPort {
     private readonly repository: Repository<CustomerEntity>,
   ) {}
 
-  async findById(id: string): Promise<Customer> {
-    const customerEntity = await this.repository.findOne({ where: { id } });
-    if (!customerEntity) {
-      throw new Error('Customer not found');
-    }
-    return customerEntity.toDomain();
+  async save(customer: Customer): Promise<Customer> {
+    const entity = CustomerMapper.toEntity(customer);
+    const savedEntity = await this.repository.save(entity);
+    return CustomerMapper.toDomain(savedEntity);
   }
 
-  async save(customer: Customer): Promise<void> {
-    const customerEntity = CustomerEntity.fromDomain(customer);
-    await this.repository.save(customerEntity);
+  async findById(id: string): Promise<Customer | null> {
+    const entity = await this.repository.findOne({ where: { id } });
+    return entity ? CustomerMapper.toDomain(entity) : null;
+  }
+
+  async findAll(): Promise<Customer[]> {
+    const entities = await this.repository.find();
+    return entities.map((entity) => CustomerMapper.toDomain(entity));
   }
 }

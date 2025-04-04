@@ -1,6 +1,7 @@
 import { Customer } from '../../domain/model/customer.model';
 
 export interface CustomerRepositoryPort {
-  findById(id: string): Promise<Customer>;
-  save(customer: Customer): Promise<void>;
+  save(customer: Customer): Promise<Customer>;
+  findById(id: string): Promise<Customer | null>;
+  findAll(): Promise<Customer[]>;
 }
