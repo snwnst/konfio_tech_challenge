@@ -28,9 +28,7 @@ export class DatabaseConfigAdapter implements DatabaseConfigPort {
   }
 
   getMigrations(path: string): string[] {
-    return (
-      process.env.DB_MIGRATIONS?.split(',') || [`dist/migrations/${path}/*.ts`]
-    );
+    return process.env.DB_MIGRATIONS?.split(',') || [`migrations/${path}/*.ts`];
   }
 
   shouldSynchronize(): boolean {

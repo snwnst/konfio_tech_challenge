@@ -27,8 +27,6 @@ export class CreateCustomerUseCase {
         createCustomerDto as Customer,
       );
 
-      console.log('customer', customer);
-
       const cacheKey = `customer:${customer.id}`;
       await this.cachePort.del(cacheKey);
 
