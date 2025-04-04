@@ -2,6 +2,7 @@ import { Customer } from 'src/domain/model/customer.model';
 import { CustomerEntity } from '../entities/customer.entity';
 import { ContactInfoMapper } from './contact-info.mapper';
 import { PartyMapper } from './party.mapper';
+import { ContactInfoEntity } from '../entities/contact-info.entity';
 
 export class CustomerMapper {
   static toDomain(entity: CustomerEntity): Customer {
@@ -27,7 +28,9 @@ export class CustomerMapper {
     entity.taxId = domain.taxId;
     entity.type = domain.type;
 
-    entity.contactInfo = ContactInfoMapper.toEntity(domain.contactInfo);
+    entity.contactInfo = domain.contactInfo
+      ? ContactInfoMapper.toEntity(domain.contactInfo)
+      : new ContactInfoEntity();
 
     if (domain.parties) {
       entity.parties = domain.parties.map((party) =>

@@ -58,6 +58,7 @@ export class CustomerRepository implements CustomerRepositoryPort {
 
   async create(customer: Customer): Promise<Customer> {
     const entity = CustomerMapper.toEntity(customer);
+    console.log('entity', entity);
     const savedEntity = await this.repository.save(entity);
     return CustomerMapper.toDomain(savedEntity);
   }

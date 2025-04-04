@@ -23,4 +23,11 @@ export class UpdateCustomerDto {
     required: false,
   })
   type?: CustomerType;
+
+  @ApiProperty({
+    description: 'Customer email',
+    example: 'john.doe@example.com',
+    required: false,
+  })
+  email?: string;
 }

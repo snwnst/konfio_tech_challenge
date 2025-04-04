@@ -18,9 +18,6 @@ export class CustomerEntity {
   name: string;
 
   @Column()
-  email: string;
-
-  @Column()
   taxId: string;
 
   @Column({
@@ -36,7 +33,9 @@ export class CustomerEntity {
   @OneToMany(() => PartyEntity, (party) => party.customer)
   parties: PartyEntity[];
 
-  @ManyToOne(() => ContactInfoEntity, (contactInfo) => contactInfo.customers)
+  @ManyToOne(() => ContactInfoEntity, (contactInfo) => contactInfo.customers, {
+    cascade: true,
+  })
   contactInfo: ContactInfoEntity;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

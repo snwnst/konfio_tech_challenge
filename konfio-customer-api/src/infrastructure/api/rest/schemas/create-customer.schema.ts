@@ -19,4 +19,23 @@ export const createCustomerSchema = Joi.object({
         Object.values(CustomerType).join(', '),
       'any.required': 'Customer type is required',
     }),
+  contactInfo: Joi.object({
+    email: Joi.string().email().required().messages({
+      'string.email': 'Contact email must be valid',
+      'string.empty': 'Contact email is required',
+      'any.required': 'Contact email is required',
+    }),
+    phone: Joi.string().required().messages({
+      'string.empty': 'Contact phone is required',
+      'any.required': 'Contact phone is required',
+    }),
+    address: Joi.string().required().messages({
+      'string.empty': 'Contact address is required',
+      'any.required': 'Contact address is required',
+    }),
+  })
+    .required()
+    .messages({
+      'any.required': 'Contact info is required',
+    }),
 });
