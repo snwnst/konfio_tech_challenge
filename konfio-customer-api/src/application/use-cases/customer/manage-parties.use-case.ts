@@ -7,6 +7,7 @@ import {
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
 import { PartyRepositoryPort } from '../../../domain/ports/party.repository.port';
 import { PartyRole } from '../../../domain/model/party-role.model';
+import { Logger } from '../../../infrastructure/logger/logger.interface';
 
 interface PartyUpdateData {
   name?: string;
@@ -21,28 +22,52 @@ export class ManagePartiesUseCase {
     private readonly customerRepository: CustomerRepositoryPort,
     @Inject('PartyRepositoryPort')
     private readonly partyRepository: PartyRepositoryPort,
+    @Inject('Logger')
+    private readonly logger: Logger,
   ) {}
 
   async addParty(customerId: string, partyId: string): Promise<void> {
-    const customer = await this.customerRepository.findById(customerId);
-    if (!customer) {
-      throw new NotFoundException(`Customer with ID ${customerId} not found`);
-    }
+    try {
+      this.logger.info('Adding party to customer', { customerId, partyId });
 
-    const party = await this.partyRepository.findById(partyId);
-    if (!party) {
-      throw new NotFoundException(`Party with ID ${partyId} not found`);
-    }
+      const customer = await this.customerRepository.findById(customerId);
+      if (!customer) {
+        this.logger.warn('Customer not found for adding party', { customerId });
+        throw new NotFoundException(`Customer with ID ${customerId} not found`);
+      }
 
-    const existingParties =
-      await this.customerRepository.getParties(customerId);
-    if (existingParties.includes(partyId)) {
-      throw new BadRequestException(
-        `Party with ID ${partyId} is already associated with customer ${customerId}`,
-      );
-    }
+      const party = await this.partyRepository.findById(partyId);
+      if (!party) {
+        this.logger.warn('Party not found for adding to customer', { partyId });
+        throw new NotFoundException(`Party with ID ${partyId} not found`);
+      }
 
-    await this.customerRepository.addParty(customerId, partyId);
+      const existingParties =
+        await this.customerRepository.getParties(customerId);
+      if (existingParties.includes(partyId)) {
+        this.logger.warn('Party already associated with customer', {
+          customerId,
+          partyId,
+        });
+        throw new BadRequestException(
+          `Party with ID ${partyId} is already associated with customer ${customerId}`,
+        );
+      }
+
+      await this.customerRepository.addParty(customerId, partyId);
+
+      this.logger.info('Party added to customer successfully', {
+        customerId,
+        partyId,
+      });
+    } catch (error) {
+      this.logger.error('Error adding party to customer', {
+        error: error instanceof Error ? error.message : String(error),
+        customerId,
+        partyId,
+      });
+      throw error;
+    }
   }
 
   async updateParty(
@@ -50,37 +75,87 @@ export class ManagePartiesUseCase {
     partyId: string,
     data: PartyUpdateData,
   ): Promise<void> {
-    const customer = await this.customerRepository.findById(customerId);
-    if (!customer) {
-      throw new NotFoundException(`Customer with ID ${customerId} not found`);
-    }
+    try {
+      this.logger.info('Updating party for customer', {
+        customerId,
+        partyId,
+        data,
+      });
 
-    const party = await this.partyRepository.findById(partyId);
-    if (!party) {
-      throw new NotFoundException(`Party with ID ${partyId} not found`);
-    }
+      const customer = await this.customerRepository.findById(customerId);
+      if (!customer) {
+        this.logger.warn('Customer not found for updating party', {
+          customerId,
+        });
+        throw new NotFoundException(`Customer with ID ${customerId} not found`);
+      }
 
-    const existingParties =
-      await this.customerRepository.getParties(customerId);
-    if (!existingParties.includes(partyId)) {
-      throw new BadRequestException(
-        `Party with ID ${partyId} is not associated with customer ${customerId}`,
-      );
-    }
+      const party = await this.partyRepository.findById(partyId);
+      if (!party) {
+        this.logger.warn('Party not found for updating', { partyId });
+        throw new NotFoundException(`Party with ID ${partyId} not found`);
+      }
 
-    if (data.role && !Object.values(PartyRole).includes(data.role)) {
-      throw new BadRequestException(`Invalid role: ${data.role}`);
-    }
+      const existingParties =
+        await this.customerRepository.getParties(customerId);
+      if (!existingParties.includes(partyId)) {
+        this.logger.warn('Party not associated with customer', {
+          customerId,
+          partyId,
+        });
+        throw new BadRequestException(
+          `Party with ID ${partyId} is not associated with customer ${customerId}`,
+        );
+      }
 
-    await this.customerRepository.updateParty(customerId, partyId, data);
+      if (data.role && !Object.values(PartyRole).includes(data.role)) {
+        throw new BadRequestException(`Invalid role: ${data.role}`);
+      }
+
+      await this.customerRepository.updateParty(customerId, partyId, data);
+
+      this.logger.info('Party updated successfully', {
+        customerId,
+        partyId,
+        data,
+      });
+    } catch (error) {
+      this.logger.error('Error updating party', {
+        error: error instanceof Error ? error.message : String(error),
+        customerId,
+        partyId,
+        data,
+      });
+      throw error;
+    }
   }
 
   async getParties(customerId: string): Promise<string[]> {
-    const customer = await this.customerRepository.findById(customerId);
-    if (!customer) {
-      throw new NotFoundException(`Customer with ID ${customerId} not found`);
-    }
+    try {
+      this.logger.info('Getting parties for customer', { customerId });
 
-    return this.customerRepository.getParties(customerId);
+      const customer = await this.customerRepository.findById(customerId);
+      if (!customer) {
+        this.logger.warn('Customer not found for getting parties', {
+          customerId,
+        });
+        throw new NotFoundException(`Customer with ID ${customerId} not found`);
+      }
+
+      const parties = await this.customerRepository.getParties(customerId);
+
+      this.logger.info('Parties retrieved successfully', {
+        customerId,
+        partyCount: parties.length,
+      });
+
+      return parties;
+    } catch (error) {
+      this.logger.error('Error getting parties', {
+        error: error instanceof Error ? error.message : String(error),
+        customerId,
+      });
+      throw error;
+    }
   }
 }

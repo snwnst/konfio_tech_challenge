@@ -9,9 +9,10 @@ import { UpdateCustomerUseCase } from 'src/application/use-cases/customer/update
 import { DeleteCustomerUseCase } from 'src/application/use-cases/customer/delete-customer.use-case';
 import { ManagePartiesUseCase } from 'src/application/use-cases/customer/manage-parties.use-case';
 import { GetPartyCustomersUseCase } from 'src/application/use-cases/party/get-party-customers.use-case';
+import { LoggerModule } from 'src/infrastructure/logger/logger.module';
 
 @Module({
-  imports: [PersistenceModule],
+  imports: [PersistenceModule, LoggerModule],
   controllers: [CustomerController, PartyController],
   providers: [
     ListCustomersUseCase,
