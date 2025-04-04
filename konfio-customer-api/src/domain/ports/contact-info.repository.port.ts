@@ -1,4 +1,4 @@
-import { ContactInfo } from '../../domain/model/contact-info.model';
+import { ContactInfo } from '../model/contact-info.model';
 
 export interface ContactInfoRepositoryPort {
   save(contactInfo: ContactInfo): Promise<ContactInfo>;

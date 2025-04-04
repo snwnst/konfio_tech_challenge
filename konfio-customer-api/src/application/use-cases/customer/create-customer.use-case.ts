@@ -1,11 +1,14 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
 import { Customer } from '../../../domain/model/customer.model';
-import { CustomerType } from 'src/domain/model/customer-type.model';
+import { CustomerType } from '../../../domain/model/customer-type.model';
 
 @Injectable()
 export class CreateCustomerUseCase {
-  constructor(private readonly customerRepository: CustomerRepositoryPort) {}
+  constructor(
+    @Inject('CustomerRepositoryPort')
+    private readonly customerRepository: CustomerRepositoryPort,
+  ) {}
 
   async execute(customerData: Partial<Customer>): Promise<Customer> {
     if (!customerData.taxId) {
@@ -14,16 +17,24 @@ export class CreateCustomerUseCase {
     if (!customerData.type) {
       throw new BadRequestException('Enterprise type is required');
     }
-    if (
-      ![CustomerType.INDIVIDUAL, CustomerType.INDIVIDUAL].includes(
-        customerData.type,
-      )
-    ) {
+    if (!customerData.name) {
+      throw new BadRequestException('Name is required');
+    }
+
+    if (!Object.values(CustomerType).includes(customerData.type)) {
       throw new BadRequestException(
-        'Enterprise type must be either company or individual',
+        `Enterprise type must be either ${CustomerType.ENTERPRISE} or ${CustomerType.INDIVIDUAL}`,
       );
     }
 
+    if (
+      customerData.type === CustomerType.ENTERPRISE &&
+      customerData.taxId.length < 10
+    ) {
+      throw new BadRequestException(
+        'Company tax ID must be at least 10 characters long',
+      );
+    }
     return this.customerRepository.create(customerData as Customer);
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ContactInfoRepositoryPort } from '../../../../application/ports/contact-info.repository.port';
+import { ContactInfoRepositoryPort } from '../../../../domain/ports/contact-info.repository.port';
 import { ContactInfo } from '../../../../domain/model/contact-info.model';
 import { ContactInfoEntity } from '../entities/contact-info.entity';
 import { ContactInfoMapper } from '../mappers/contact-info.mapper';

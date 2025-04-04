@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { CustomerRepositoryPort } from '../../../domain/ports/customer.repository.port';
 import { Customer } from '../../../domain/model/customer.model';
 
 @Injectable()
 export class ListCustomersUseCase {
-  constructor(private readonly customerRepository: CustomerRepositoryPort) {}
+  constructor(
+    @Inject('CustomerRepositoryPort')
+    private readonly customerRepository: CustomerRepositoryPort,
+  ) {}
 
   async execute(filters: {
     enterpriseType?: string;

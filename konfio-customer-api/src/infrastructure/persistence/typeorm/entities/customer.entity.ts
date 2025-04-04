@@ -30,6 +30,9 @@ export class CustomerEntity {
   })
   type: CustomerType;
 
+  @Column({ default: false })
+  isDeleted: boolean;
+
   @OneToMany(() => PartyEntity, (party) => party.customer)
   parties: PartyEntity[];
 
