@@ -66,18 +66,7 @@ jobs:
         data:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NODE_ENV: "production"
-        EOF
-        
-        # Create Secret for sensitive data
-        cat <<EOF | kubectl apply -f -
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: konfio-customer-api-secrets
-          namespace: konfio
-        type: Opaque
-        data:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DB_TYPE: "mysql"
         EOF
         
         # Deploy the application
@@ -105,8 +94,6 @@ jobs:
                 envFrom:
                 - configMapRef:
                     name: konfio-customer-api-config
-                - secretRef:
-                    name: konfio-customer-api-secrets
                 resources:
                   requests:
                     cpu: "100m"
